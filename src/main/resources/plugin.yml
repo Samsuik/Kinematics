@@ -1,0 +1,15 @@
+name: Kinematics
+main: bambi.kinematics.Kinematics
+version: 0.0.1
+authors: [Bambi]
+commands:
+  kinematics:
+    aliases: [k, kin]
+    usage: Syntax error!
+    description: It's a test
+  kspawn:
+    usage: /kspawn <Entity> <x> <y> <z> [amount] [fuse] 
+    description: Test
+  protection:
+    usage: /kprotection <on/off>
+    description: Test

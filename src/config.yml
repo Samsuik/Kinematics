@@ -1,7 +1,0 @@
-protection:
-  enable: true
-  not_protected:
-    - Cobblestone
-    - Sand
-    - Gravel
-    - Step
