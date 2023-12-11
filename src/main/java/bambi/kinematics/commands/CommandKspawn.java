@@ -81,10 +81,9 @@ public class CommandKspawn extends KinematicsCommand {
                     FallingBlock fallingblock = w.spawnFallingBlock(loc, Material.GRAVEL, (byte) 0);
                     fallingblock.teleport(loc);
                 }
+                default -> throw new CommandException("unable to get entity: " + type);
             }
         }
-
-        throw new CommandException("unable to get entity: " + type);
     }
 
     @Override
