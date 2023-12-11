@@ -42,7 +42,7 @@ public class CommandKspawn extends KinematicsCommand {
         }
 
         Vector vec = new Vector();
-        String type = args[0].toLowerCase();
+        String type = findCorrectTypeFromAliases(args[0].toLowerCase());
         int amount = (args = CommandKspawn.shiftarray(args)).length > 3 ? CommandKspawn.parsInt(args[3]) : 1;
         int fuse = args.length > 4 ? CommandKspawn.parsInt(args[4]) : 80;
 
@@ -61,29 +61,30 @@ public class CommandKspawn extends KinematicsCommand {
         Location loc = vec.toLocation(w);
 
         for (int i = 0; i < amount; ++i) {
-            switch (type) {
-                case "tntprimed", "primedtnt", "tnt" -> {
-                    TNTPrimed tnt = (TNTPrimed) w.spawnEntity(loc, EntityType.PRIMED_TNT);
-                    tnt.setVelocity(new Vector().zero());
-                    tnt.setFuseTicks(fuse);
-                }
-                case "sand", "white" -> {
-                    FallingBlock fallingblock;
-                    fallingblock = w.spawnFallingBlock(loc, Material.SAND, (byte) 0);
-                    fallingblock.teleport(loc);
-                }
-                case "red", "redsand" -> {
-                    FallingBlock fallingblock;
-                    fallingblock = w.spawnFallingBlock(loc, Material.SAND, (byte) 1);
-                    fallingblock.teleport(loc);
-                }
-                case "gravel" -> {
-                    FallingBlock fallingblock = w.spawnFallingBlock(loc, Material.GRAVEL, (byte) 0);
-                    fallingblock.teleport(loc);
-                }
-                default -> throw new CommandException("unable to get entity: " + type);
+            Material material = Material.matchMaterial(type);
+
+            if (material == Material.TNT) {
+                TNTPrimed tnt = (TNTPrimed) w.spawnEntity(loc, EntityType.PRIMED_TNT);
+                tnt.setVelocity(new Vector().zero());
+                tnt.setFuseTicks(fuse);
+            } else if (material != null && material.hasGravity()) {
+                FallingBlock fb = (FallingBlock) w.spawnEntity(loc, EntityType.FALLING_BLOCK);
+                fb.setTicksLived(1);
+                fb.setBlockData(material.createBlockData());
+                fb.teleport(loc);
+            } else {
+                throw new CommandException("unable to get entity: " + type);
             }
         }
+    }
+
+    private String findCorrectTypeFromAliases(String type) {
+        return switch (type) {
+            case "tntprimed", "primedtnt" -> "tnt";
+            case "white" -> "sand";
+            case "red", "redsand" -> "red_sand";
+            default -> type;
+        };
     }
 
     @Override
