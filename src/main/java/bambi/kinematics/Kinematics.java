@@ -31,6 +31,7 @@ public class Kinematics extends JavaPlugin {
     private static HashSet<Player> entityspawnPlayerSet = new HashSet<>();
     private static Vector explosionTolerance = new Vector(0.0, 2.0, 0.0);
     private static boolean showExplosionsonGround = true;
+    private static boolean showEntityVelocity = true;
     private static int minExplosions = 0;
     private static int minStacking = 0;
     private static int minNearby = 100;
@@ -157,6 +158,14 @@ public class Kinematics extends JavaPlugin {
 
     public static void setShowExplosionsonGround(boolean showExplosionsonGround) {
         Kinematics.showExplosionsonGround = showExplosionsonGround;
+    }
+
+    public static boolean isShowEntityVelocity() {
+        return showEntityVelocity;
+    }
+
+    public static void setShowEntityVelocity(boolean showEntityVelocity) {
+        Kinematics.showEntityVelocity = showEntityVelocity;
     }
 
     public static int getMinExplosions() {

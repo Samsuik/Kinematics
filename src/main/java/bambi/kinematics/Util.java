@@ -37,7 +37,25 @@ public class Util {
     }
 
     public static String replaceAll(String s, Vector pos, Vector vel, int tick2, int order, int amount, String type) {
-        s = s.replaceAll("@tick", tick2 < 0 ? "" : String.valueOf(tick2)).replaceAll("@order", order < 0 ? "" : String.valueOf(order)).replaceAll("@amount", amount < 0 ? "" : String.valueOf(amount)).replaceAll("@type", type).replaceAll("@vx", vel.getX() == 0.0 ? "" : "(" + Util.round(vel.getX()) + ")").replaceAll("@vy", vel.getY() == 0.0 ? "" : "(" + Util.round(vel.getY()) + ")").replaceAll("@vz", vel.getZ() == 0.0 ? "" : "(" + Util.round(vel.getZ()) + ")").replaceAll("@x", String.valueOf(Util.round(pos.getX()))).replaceAll("@y", String.valueOf(Util.round(pos.getY()))).replaceAll("@z", String.valueOf(Util.round(pos.getZ())));
+        // place holders
+        s = s.replaceAll("@tick", tick2 < 0 ? "" : String.valueOf(tick2))
+            .replaceAll("@order", order < 0 ? "" : String.valueOf(order))
+            .replaceAll("@amount", amount < 0 ? "" : String.valueOf(amount))
+            .replaceAll("@type", type)
+            .replaceAll("@x", String.valueOf(Util.round(pos.getX())))
+            .replaceAll("@y", String.valueOf(Util.round(pos.getY())))
+            .replaceAll("@z", String.valueOf(Util.round(pos.getZ())));
+
+        if (Kinematics.isShowEntityVelocity()) {
+            s = s.replaceAll("@vx", vel.getX() == 0.0 ? "" : "(" + Util.round(vel.getX()) + ")")
+                .replaceAll("@vy", vel.getY() == 0.0 ? "" : "(" + Util.round(vel.getY()) + ")")
+                .replaceAll("@vz", vel.getZ() == 0.0 ? "" : "(" + Util.round(vel.getZ()) + ")");
+        } else {
+            s = s.replaceAll("@vx", "")
+                .replaceAll("@vy", "")
+                .replaceAll("@vz", "");
+        }
+
         return s;
     }
 

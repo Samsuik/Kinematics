@@ -10,6 +10,7 @@ public class CommandExplosions extends ToggleCommand {
         this.addAlias("exp");
         this.addAlias("x");
         this.addSub(new CommandShowOnGround());
+        this.addSub(new CommandShowEntityVelocity());
         this.addSub(new CommandMinExplosions());
         this.addSub(new CommandTolerance());
         this.addSub(new CommandGetNearby());

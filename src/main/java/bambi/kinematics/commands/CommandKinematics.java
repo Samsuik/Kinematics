@@ -8,6 +8,7 @@ public class CommandKinematics extends KinematicsCommand {
         super("kinematics");
         this.addSub(new CommandExplosions());
         this.addSub(new CommandShowOnGround());
+        this.addSub(new CommandShowEntityVelocity());
         this.addSub(new CommandRound());
         this.addSub(new CommandStacking());
         this.addSub(new CommandTolerance());
