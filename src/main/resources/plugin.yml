@@ -2,6 +2,7 @@ name: Kinematics
 main: bambi.kinematics.Kinematics
 version: 0.0.1
 authors: [Bambi]
+api-version: 1.13
 commands:
   kinematics:
     aliases: [k, kin]
