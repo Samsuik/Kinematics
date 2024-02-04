@@ -1,13 +1,10 @@
 package bambi.kinematics.commands;
 
-import org.bukkit.ChatColor;
-
 public class CommandException extends Exception {
-    private static final long serialVersionUID = -4797298126884473883L;
-    private static final String prefix = ChatColor.DARK_RED + "Kinematics syntax error: " + ChatColor.GRAY;
+    private static final String EXCEPTION_PREFIX = "<dark_red>Kinematics syntax error: </dark_red><gray>";
 
     public CommandException(String message) {
-        super(prefix + message);
+        super(EXCEPTION_PREFIX + message);
     }
 }
 

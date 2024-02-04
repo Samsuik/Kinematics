@@ -1,7 +1,10 @@
 package bambi.kinematics.commands;
 
+import bambi.kinematics.Kinematics;
 import bambi.kinematics.enums.Alignment;
 import bambi.kinematics.enums.Direction;
+import bambi.kinematics.player.KinematicsPlayer;
+import bambi.kinematics.utils.ArrayUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -18,9 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommandKspawn extends KinematicsCommand {
-    public CommandKspawn() {
-        super("kspawn");
-        this.addAlias("spawn");
+    public CommandKspawn(Kinematics plugin) {
+        super(plugin, "kspawn", List.of("spawn"));
     }
 
     @Override
@@ -32,18 +34,18 @@ public class CommandKspawn extends KinematicsCommand {
     }
 
     @Override
-    public void execute(Player p, String[] args) throws CommandException {
-        this.execute(p.getWorld(), args);
+    public void execute(KinematicsPlayer kplayer, String[] args) throws CommandException {
+        this.execute(kplayer.getPlayer().getWorld(), args);
     }
 
-    public void execute(World w, String[] args) throws CommandException {
+    private void execute(World w, String[] args) throws CommandException {
         if (args.length < 4) {
             throw new CommandException("not enough arguments");
         }
 
         Vector vec = new Vector();
         String type = findCorrectTypeFromAliases(args[0].toLowerCase());
-        int amount = (args = CommandKspawn.shiftarray(args)).length > 3 ? CommandKspawn.parsInt(args[3]) : 1;
+        int amount = (args = ArrayUtil.shiftarray(args)).length > 3 ? CommandKspawn.parsInt(args[3]) : 1;
         int fuse = args.length > 4 ? CommandKspawn.parsInt(args[4]) : 80;
 
         for (Alignment alignment : Alignment.values()) {
@@ -88,20 +90,17 @@ public class CommandKspawn extends KinematicsCommand {
     }
 
     @Override
-    public List<String> TabComplete(CommandSender sender, String label, String[] args) {
-        if (!(sender instanceof Player p)) {
-            return null;
-        }
-
-        ArrayList<String> list = new ArrayList<>();
+    public List<String> tabComplete(KinematicsPlayer kplayer, String fullCommand, String[] args) {
+        List<String> list = new ArrayList<>();
         if (args.length == 0) {
             list.add("tnt");
             list.add("sand");
             return list;
         }
 
-        Block target = p.getTargetBlock(null, 8);
-        Location loc = target.getType().equals(Material.AIR) ? p.getEyeLocation() : target.getLocation();
+        Player player = kplayer.getPlayer();
+        Block target = player.getTargetBlock(null, 8);
+        Location loc = target.getType().isAir() ? player.getEyeLocation() : target.getLocation();
         list.add(loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getBlockZ());
         return list;
     }

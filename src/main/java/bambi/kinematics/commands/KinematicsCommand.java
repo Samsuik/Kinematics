@@ -1,56 +1,103 @@
 package bambi.kinematics.commands;
 
-import org.bukkit.ChatColor;
+import bambi.kinematics.Kinematics;
+import bambi.kinematics.configuration.Configuration;
+import bambi.kinematics.player.KinematicsPlayer;
+import bambi.kinematics.utils.ArrayUtil;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 public abstract class KinematicsCommand implements CommandExecutor, TabCompleter {
+    private final List<KinematicsCommand> subcommands = new ArrayList<>();
     private final String name;
-    private final HashSet<KinematicsCommand> subcommands = new HashSet<>();
-    private final HashSet<String> aliases = new HashSet<>();
-    private static final String prefix = ChatColor.AQUA + "Kinematics " + ChatColor.GRAY;
+    private final List<String> aliases;
+    private final Kinematics plugin;
 
-    public KinematicsCommand(String name) {
-        this.name = name.toLowerCase();
+    public KinematicsCommand(Kinematics plugin, String name) {
+        this(plugin, name, List.of());
     }
 
-    public abstract void execute(CommandSender var1, String[] var2) throws CommandException;
+    public KinematicsCommand(Kinematics plugin, String name, List<String> aliases) {
+        this.plugin = plugin;
+        this.aliases = aliases;
+        this.name = name;
+    }
 
-    public abstract void execute(Player var1, String[] var2) throws CommandException;
+    public final String getName() {
+        return name;
+    }
 
-    public void execute(CommandSender sender, String label, String[] args) throws CommandException {
+    public final List<String> getAliases() {
+        return aliases;
+    }
+
+    public final Kinematics getPlugin() {
+        return plugin;
+    }
+
+    public final Configuration getConfig() {
+        return plugin.getConfiguration();
+    }
+
+    @Override
+    public final boolean onCommand(@NotNull CommandSender sender, @NotNull Command fullCommand, @NotNull String s, @NotNull String[] args) {
+        try {
+            this.baseCommand(sender, s, ArrayUtil.arraytolowercase(args));
+        } catch (CommandException e) {
+            sender.sendMessage(MiniMessage.miniMessage().deserialize(e.getMessage()));
+        }
+
+        return true;
+    }
+
+    public abstract void execute(CommandSender sender, String[] args) throws CommandException;
+
+    public abstract void execute(KinematicsPlayer kplayer, String[] args) throws CommandException;
+
+    protected void baseCommand(@NotNull CommandSender sender, @NotNull String fullCommand, @NotNull String[] args) throws CommandException {
         if (args.length > 0) {
             for (KinematicsCommand sub : this.subcommands) {
-                if (!args[0].equalsIgnoreCase(sub.getName()) && !sub.getAliases().contains(args[0].toLowerCase()))
-                    continue;
-                sub.execute(sender, args[0], KinematicsCommand.shiftarray(args));
-                return;
+                if (args[0].equalsIgnoreCase(sub.getName()) || sub.getAliases().contains(args[0].toLowerCase())) {
+                    sub.baseCommand(sender, args[0], ArrayUtil.shiftarray(args));
+                    return;
+                }
             }
         }
 
-        if (sender instanceof Player) {
-            this.execute((Player) sender, args);
+        if (sender instanceof Player player) {
+            this.execute(getPlugin().getPlayerManager().wrap(player), args);
         } else {
             this.execute(sender, args);
         }
     }
 
-    public List<String> TabComplete(CommandSender sender, String label, String[] args) {
+    @Override
+    public final @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String fullCommand, @NotNull String[] args) {
+        if (!(commandSender instanceof Player player)) {
+            return null;
+        } else {
+            return tabComplete(plugin.getPlayerManager().wrap(player), fullCommand, ArrayUtil.arraytolowercase(args));
+        }
+    }
+
+    public List<String> tabComplete(KinematicsPlayer kplayer, String fullCommand, String[] args) {
         ArrayList<String> list = new ArrayList<>();
 
         if (args.length > 0) {
             block0:
             for (KinematicsCommand sub : this.subcommands) {
                 if (args[0].equalsIgnoreCase(sub.getName()) || sub.getAliases().contains(args[0].toLowerCase())) {
-                    return sub.TabComplete(sender, args[0], KinematicsCommand.shiftarray(args));
+                    return sub.tabComplete(kplayer, args[0], ArrayUtil.shiftarray(args));
                 }
                 if (sub.getName().startsWith(args[0])) {
                     list.add(sub.getName());
@@ -67,12 +114,12 @@ public abstract class KinematicsCommand implements CommandExecutor, TabCompleter
 
         block2:
         for (KinematicsCommand sub : this.subcommands) {
-            if (sub.getName().startsWith(label)) {
+            if (sub.getName().startsWith(fullCommand)) {
                 list.add(sub.getName());
                 continue;
             }
             for (String ali : sub.getAliases()) {
-                if (!ali.startsWith(label)) continue;
+                if (!ali.startsWith(fullCommand)) continue;
                 list.add(ali);
                 continue block2;
             }
@@ -81,45 +128,11 @@ public abstract class KinematicsCommand implements CommandExecutor, TabCompleter
         return list;
     }
 
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        try {
-            this.execute(sender, label, KinematicsCommand.arraytolowercase(args));
-        } catch (CommandException e) {
-            sender.sendMessage(e.getMessage());
-        }
-
-        return true;
-    }
-
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        return this.TabComplete(sender, label, KinematicsCommand.arraytolowercase(args));
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void addSub(KinematicsCommand cmd) {
+    public final void addSub(KinematicsCommand cmd) {
         this.subcommands.add(cmd);
     }
 
-    public HashSet<KinematicsCommand> getSubcommands() {
-        return this.subcommands;
-    }
-
-    public void addAlias(String alias) {
-        this.aliases.add(alias.toLowerCase());
-    }
-
-    public HashSet<String> getAliases() {
-        return this.aliases;
-    }
-
-    public static String getPrefix() {
-        return prefix;
-    }
-
-    public static int parsInt(String arg) throws CommandException {
+    protected static int parsInt(String arg) throws CommandException {
         try {
             return Integer.parseInt(arg);
         } catch (Exception e) {
@@ -127,7 +140,7 @@ public abstract class KinematicsCommand implements CommandExecutor, TabCompleter
         }
     }
 
-    public static double parsDouble(String arg) throws CommandException {
+    protected static double parsDouble(String arg) throws CommandException {
         try {
             return Double.parseDouble(arg);
         } catch (Exception e) {
@@ -135,28 +148,12 @@ public abstract class KinematicsCommand implements CommandExecutor, TabCompleter
         }
     }
 
-    public static Material parsMaterial(String arg) throws CommandException {
+    protected static Material parsMaterial(String arg) throws CommandException {
         try {
             return Material.valueOf(arg.toUpperCase());
         } catch (Exception e) {
             throw new CommandException("no material: " + arg);
         }
-    }
-
-    public static String[] shiftarray(String[] array) {
-        String[] newarray = new String[array.length - 1];
-        for (int i = array.length - 1; i > 0; --i) {
-            newarray[i - 1] = array[i];
-        }
-        return newarray;
-    }
-
-    public static String[] arraytolowercase(String[] array) {
-        String[] newarray = new String[array.length];
-        for (int i = 0; i < array.length; i++) {
-            newarray[i] = array[i].toLowerCase();
-        }
-        return newarray;
     }
 }
 

@@ -4,9 +4,54 @@ import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
 public enum Direction {
-    x(0),
-    y(1),
-    z(2);
+    x(0) {
+        @Override
+        public Vector setvec(Vector vec, double d) {
+            return vec.setX(d);
+        }
+
+        @Override
+        public Vector addvec(Vector vec, double d) {
+            return vec.setX(vec.getX() + d);
+        }
+
+        @Override
+        public Location addLoc(Location loc, double d) {
+            return loc.add(d, 0, 0);
+        }
+    },
+    y(1) {
+        @Override
+        public Vector setvec(Vector vec, double d) {
+            return vec.setY(d);
+        }
+
+        @Override
+        public Vector addvec(Vector vec, double d) {
+            return vec.setY(vec.getY() + d);
+        }
+
+        @Override
+        public Location addLoc(Location loc, double d) {
+            return loc.add(0, d, 0);
+        }
+    },
+    z(2) {
+        @Override
+        public Vector setvec(Vector vec, double d) {
+            return vec.setZ(d);
+        }
+
+        @Override
+        public Vector addvec(Vector vec, double d) {
+            return vec.setZ(vec.getZ() + d);
+        }
+
+        @Override
+        public Location addLoc(Location loc, double d) {
+            return loc.add(0, 0, d);
+        }
+    };
 
     private final int dir;
 
@@ -14,95 +59,14 @@ public enum Direction {
         this.dir = i;
     }
 
-    public int getInt() {
+    public final int getInt() {
         return this.dir;
     }
 
-    public double getvec(Vector vec) {
-        switch (this.dir) {
-            case 0: {
-                return vec.getX();
-            }
-            case 1: {
-                return vec.getY();
-            }
-            case 2: {
-                return vec.getZ();
-            }
-        }
-        return 0.0;
-    }
+    public abstract Vector setvec(Vector vec, double d);
 
-    public Vector setvec(Vector vec, double d) {
-        switch (this.dir) {
-            case 0: {
-                vec.setX(d);
-                break;
-            }
-            case 1: {
-                vec.setY(d);
-                break;
-            }
-            case 2: {
-                vec.setZ(d);
-                break;
-            }
-        }
-        return vec;
-    }
+    public abstract Vector addvec(Vector vec, double d);
 
-    public Vector addvec(Vector vec, double d) {
-        switch (this.dir) {
-            case 0: {
-                vec.setX(vec.getX() + d);
-                break;
-            }
-            case 1: {
-                vec.setY(vec.getY() + d);
-                break;
-            }
-            case 2: {
-                vec.setZ(vec.getZ() + d);
-                break;
-            }
-        }
-        return vec;
-    }
-
-    public Location setLoc(Location loc, double d) {
-        switch (this.dir) {
-            case 0: {
-                loc.setX(d);
-                break;
-            }
-            case 1: {
-                loc.setY(d);
-                break;
-            }
-            case 2: {
-                loc.setZ(d);
-                break;
-            }
-        }
-        return loc;
-    }
-
-    public Location addLoc(Location loc, double d) {
-        switch (this.dir) {
-            case 0: {
-                loc.setX(loc.getX() + d);
-                break;
-            }
-            case 1: {
-                loc.setY(loc.getY() + d);
-                break;
-            }
-            case 2: {
-                loc.setZ(loc.getZ() + d);
-                break;
-            }
-        }
-        return loc;
-    }
+    public abstract Location addLoc(Location loc, double d);
 }
 
