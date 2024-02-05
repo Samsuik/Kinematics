@@ -62,7 +62,11 @@ public final class Configuration {
     }
 
     private Set<Material> getMaterials(String path, List<Material> materials, String... comments) {
-        updateDefaultOf(path, materials, comments);
+        List<String> materialNames = materials.stream()
+                .map(Enum::name)
+                .toList();
+
+        updateDefaultOf(path, materialNames, comments);
 
         return internalConfig.getList(path, materials).stream()
                 .filter(obj -> obj instanceof String)
