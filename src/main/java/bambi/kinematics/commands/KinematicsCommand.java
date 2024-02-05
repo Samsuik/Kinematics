@@ -60,6 +60,10 @@ public abstract class KinematicsCommand implements CommandExecutor, TabCompleter
         return true;
     }
 
+    public @Nullable String description() {
+        return null;
+    }
+
     public abstract void execute(CommandSender sender, String[] args) throws CommandException;
 
     public abstract void execute(KinematicsPlayer kplayer, String[] args) throws CommandException;
@@ -126,6 +130,10 @@ public abstract class KinematicsCommand implements CommandExecutor, TabCompleter
         }
 
         return list;
+    }
+
+    public final List<KinematicsCommand> getSubcommands() {
+        return subcommands;
     }
 
     public final void addSub(KinematicsCommand cmd) {

@@ -3,12 +3,18 @@ package bambi.kinematics.commands.integer;
 import bambi.kinematics.Kinematics;
 import bambi.kinematics.player.KinematicsPlayer;
 import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class CommandDistance extends IntegerCommand {
     public CommandDistance(Kinematics plugin) {
         super(plugin, "distance", List.of("dist"));
+    }
+
+    @Override
+    public @Nullable String description() {
+        return "set distance to receive alerts";
     }
 
     @Override

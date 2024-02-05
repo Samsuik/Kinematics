@@ -5,6 +5,7 @@ import bambi.kinematics.commands.integer.CommandTicksLived;
 import bambi.kinematics.enums.AlertType;
 import bambi.kinematics.player.KinematicsPlayer;
 import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -12,6 +13,11 @@ public class CommandEntitySpawn extends ToggleCommand {
     public CommandEntitySpawn(Kinematics plugin) {
         super(plugin, "entityspawn", List.of("entityinfo", "info"));
         this.addSub(new CommandTicksLived(plugin));
+    }
+
+    @Override
+    public @Nullable String description() {
+        return "entity spawn alerts";
     }
 
     @Override

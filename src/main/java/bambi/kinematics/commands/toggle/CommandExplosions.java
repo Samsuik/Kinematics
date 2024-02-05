@@ -6,6 +6,7 @@ import bambi.kinematics.commands.integer.CommandMinExplosions;
 import bambi.kinematics.enums.AlertType;
 import bambi.kinematics.player.KinematicsPlayer;
 import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -17,6 +18,11 @@ public class CommandExplosions extends ToggleCommand {
         this.addSub(new CommandMinExplosions(plugin));
         this.addSub(new CommandTolerance(plugin));
         this.addSub(new CommandGetNearby(plugin));
+    }
+
+    @Override
+    public @Nullable String description() {
+        return "explosion alerts";
     }
 
     @Override
