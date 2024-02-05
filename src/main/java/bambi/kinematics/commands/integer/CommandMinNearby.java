@@ -18,7 +18,7 @@ public class CommandMinNearby extends IntegerCommand {
 
     @Override
     public void sendMessage(KinematicsPlayer kplayer) {
-        kplayer.sendPrefixedMessage(Component.text("will show nearby entities at" + kplayer.getProperties().getMinNearby() + " explosions or more"));
+        kplayer.sendPrefixedMessage(Component.text("will show nearby entities at " + kplayer.getProperties().getMinNearby() + " explosions or more"));
     }
 }
 
