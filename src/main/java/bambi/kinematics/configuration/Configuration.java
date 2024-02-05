@@ -34,6 +34,7 @@ public final class Configuration {
         notProtected = getMaterials("protection.not_protected", List.of(Material.COBBLESTONE, Material.SAND, Material.GRAVEL, Material.COBBLESTONE_SLAB, Material.STONE_SLAB));
         maxAlertDistance = getInt("alert-distance", 1024);
 
+        internalConfig.options().copyDefaults(true);
         plugin.saveConfig();
     }
 
