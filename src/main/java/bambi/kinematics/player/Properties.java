@@ -11,6 +11,7 @@ public final class Properties {
     private int minExplosions;
     private int minStacking;
     private int minNearby = 100;
+    private int ticksLived;
     private int decimals = 4;
     private int distance;
     private int order;
@@ -45,6 +46,14 @@ public final class Properties {
 
     public void setMinNearby(int minNearby) {
         this.minNearby = minNearby;
+    }
+
+    public int getTicksLived() {
+        return ticksLived;
+    }
+
+    public void setTicksLived(int ticksLived) {
+        this.ticksLived = ticksLived;
     }
 
     public int getDecimals() {
