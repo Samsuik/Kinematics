@@ -19,7 +19,7 @@ public final class KinematicsPlayer {
     public KinematicsPlayer(Kinematics kinematics, Player player) {
         this.kinematics = kinematics;
         this.player = player;
-        this.properties.setDistance(Math.min(kinematics.getConfiguration().maxAlertDistance/2, player.getViewDistance()*16));
+        this.properties.setDistance(Math.min(kinematics.getConfiguration().maxAlertDistance, player.getViewDistance()*16*2));
         this.displayAlerts.add(AlertType.SHOW_ENTITY_VELOCITY);
         this.displayAlerts.add(AlertType.SHOW_ON_GROUND);
     }
@@ -57,7 +57,7 @@ public final class KinematicsPlayer {
     public boolean isInAlertDistance(Location location) {
         // actually stupid that these world checks are required
         return location.getWorld() != null && player.getWorld().equals(location.getWorld())
-            && player.getLocation().distanceSquared(location) < properties.getDistance();
+            && player.getLocation().distanceSquared(location) < Math.pow(properties.getDistance(), 2);
     }
 
     public void sendPrefixedMessage(Component component) {
