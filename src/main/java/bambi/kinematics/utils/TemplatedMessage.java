@@ -46,7 +46,15 @@ public final class TemplatedMessage {
                 .replaceText(velocityPlaceholder("@vy", vel.getY(), kplayer))
                 .replaceText(velocityPlaceholder("@vz", vel.getZ(), kplayer))
                 .color(colour)
-                .clickEvent(ClickEvent.runCommand("/tp " + pos.getX() + " " + pos.getY() + " " + pos.getZ()));
+                .clickEvent(ClickEvent.runCommand(createTeleportCommand(kplayer, pos)));
+    }
+
+    private String createTeleportCommand(KinematicsPlayer kplayer, Vector pos) {
+        if (kplayer.getPlayer().hasPermission("minecraft.command.teleport")) {
+            return "/tp " + pos.getX() + " " + pos.getY() + " " + pos.getZ();
+        } else {
+            return "";
+        }
     }
 
     public static Consumer<TextReplacementConfig.Builder> velocityPlaceholder(String placeholder, double with, KinematicsPlayer kplayer) {
