@@ -5,12 +5,15 @@ authors: [Bambi]
 api-version: 1.13
 commands:
   kinematics:
+    permission: kinematics.usage
     aliases: [k, kin]
     usage: Syntax error!
     description: It's a test
   kspawn:
+    permission: kinematics.kspawn
     usage: /kspawn <Entity> <x> <y> <z> [amount] [fuse] 
     description: Test
   protection:
+    permission: kinematics.protection
     usage: /kprotection <on/off>
     description: Test
