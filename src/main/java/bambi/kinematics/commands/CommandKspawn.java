@@ -35,7 +35,9 @@ public class CommandKspawn extends KinematicsCommand {
 
     @Override
     public void execute(KinematicsPlayer kplayer, String[] args) throws CommandException {
-        this.execute(kplayer.getPlayer().getWorld(), args);
+        if (kplayer.getPlayer().hasPermission("kinematics.kspawn")) {
+            this.execute(kplayer.getPlayer().getWorld(), args);
+        }
     }
 
     private void execute(World w, String[] args) throws CommandException {

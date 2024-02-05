@@ -11,8 +11,10 @@ public class CommandProtection extends ToggleCommand {
 
     @Override
     public void toggle(KinematicsPlayer kplayer, int i) {
-        getConfig().protection = toggleBool(getConfig().protection, i);
-        kplayer.sendPrefixedMessage(Component.text( "will " + (getConfig().protection ? "" : "no longer ") + "protect blocks"));
+        if (kplayer.getPlayer().hasPermission("kinematics.protection")) {
+            getConfig().protection = toggleBool(getConfig().protection, i);
+            kplayer.sendPrefixedMessage(Component.text("will " + (getConfig().protection ? "" : "no longer ") + "protect blocks"));
+        }
     }
 }
 
