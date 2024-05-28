@@ -15,10 +15,12 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
+import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class CommandKspawn extends KinematicsCommand {
     public CommandKspawn(Kinematics plugin) {
@@ -93,18 +95,12 @@ public class CommandKspawn extends KinematicsCommand {
 
     @Override
     public List<String> tabComplete(KinematicsPlayer kplayer, String fullCommand, String[] args) {
-        List<String> list = new ArrayList<>();
         if (args.length == 0) {
-            list.add("tnt");
-            list.add("sand");
-            return list;
+            return List.of("tnt", "sand", "redsand", "white_concrete");
         }
 
-        Player player = kplayer.getPlayer();
-        Block target = player.getTargetBlock(null, 8);
-        Location loc = target.getType().isAir() ? player.getEyeLocation() : target.getLocation();
-        list.add(loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getBlockZ());
-        return list;
+        Location location = kplayer.getTabCompletionBlockLocation();
+        return List.of(location.x() + " " + location.y() + " " + location.z());
     }
 }
 

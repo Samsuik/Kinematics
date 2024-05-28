@@ -5,7 +5,9 @@ import bambi.kinematics.enums.AlertType;
 import bambi.kinematics.utils.TemplatedMessage;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.util.RayTraceResult;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -66,5 +68,19 @@ public final class KinematicsPlayer {
 
     public void sendTemplatedMessage(TemplatedMessage template) {
         player.sendMessage(template.componentFor(this));
+    }
+
+    public Location getTabCompletionBlockLocation() {
+        RayTraceResult result = player.rayTraceBlocks(8);
+
+        Location location;
+        if (result == null) {
+            location = player.getLocation(); // failed
+        } else {
+            Block relative = result.getHitBlock().getRelative(result.getHitBlockFace());
+            location = relative.getLocation();
+        }
+
+        return location.toBlockLocation().add(0.5, 0.0, 0.5);
     }
 }
