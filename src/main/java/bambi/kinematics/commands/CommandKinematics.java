@@ -27,6 +27,7 @@ public class CommandKinematics extends KinematicsCommand {
         this.addSub(new CommandEntitySpawn(plugin));
         this.addSub(new CommandProtection(plugin));
         this.addSub(new CommandDistance(plugin));
+        this.addSub(new CommandShowEntityFeet(plugin));
     }
 
     @Override

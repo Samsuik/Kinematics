@@ -18,6 +18,7 @@ public class CommandExplosions extends ToggleCommand {
         this.addSub(new CommandMinExplosions(plugin));
         this.addSub(new CommandTolerance(plugin));
         this.addSub(new CommandGetNearby(plugin));
+        this.addSub(new CommandShowEntityFeet(plugin));
     }
 
     @Override

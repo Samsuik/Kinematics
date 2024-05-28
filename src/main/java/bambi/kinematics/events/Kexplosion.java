@@ -14,6 +14,7 @@ import java.util.Set;
 
 public final class Kexplosion extends Kevent<EntityExplodeEvent> {
     private final Vector pos;
+    private final Vector feet;
     private boolean onGround;
     private Set<Vector> nearby = Set.of();
     private final Vector vel;
@@ -23,6 +24,7 @@ public final class Kexplosion extends Kevent<EntityExplodeEvent> {
     public Kexplosion(KinematicsPlayer kplayer, EntityExplodeEvent e, int tick2, int order) {
         super(kplayer, e, tick2, order);
         this.pos = e.getLocation().toVector();
+        this.feet = e.getEntity().getLocation().toVector();
         this.onGround = e.getEntity().isOnGround();
         this.vel = e.getEntity().getVelocity();
         this.material = e.getLocation().getBlock().getType();
@@ -80,8 +82,10 @@ public final class Kexplosion extends Kevent<EntityExplodeEvent> {
             default -> NamedTextColor.LIGHT_PURPLE;
         };
 
+        Vector displayPos = kplayer.isViewingAlert(AlertType.ENTITY_FEET) ? this.feet : this.pos;
+
         return new TemplatedMessage(
-                kplayer.getKinematics().getConfiguration().explosionstemplate, this.pos, this.vel,
+                kplayer.getKinematics().getConfiguration().explosionstemplate, displayPos, this.vel,
                 this.tick(), this.order(), this.amount(), (this.amount() > 1) ? "explosions" : "explosion",
                 blockColour
         );
