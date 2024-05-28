@@ -5,20 +5,17 @@ import bambi.kinematics.enums.Alignment;
 import bambi.kinematics.enums.Direction;
 import bambi.kinematics.player.KinematicsPlayer;
 import bambi.kinematics.utils.ArrayUtil;
+import bambi.kinematics.utils.Materials;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
-import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -48,27 +45,26 @@ public class CommandKspawn extends KinematicsCommand {
         }
 
         Vector vec = new Vector();
-        String type = findCorrectTypeFromAliases(args[0].toLowerCase());
-        int amount = (args = ArrayUtil.shiftarray(args)).length > 3 ? CommandKspawn.parsInt(args[3]) : 1;
-        int fuse = args.length > 4 ? CommandKspawn.parsInt(args[4]) : 80;
+        Material material = Materials.matchClosestMaterial(args[0]);
+        int amount = args.length > 4 ? CommandKspawn.parsInt(args[4]) : 1;
+        int fuse = args.length > 5 ? CommandKspawn.parsInt(args[5]) : 80;
 
         for (Alignment alignment : Alignment.values()) {
-            String arg = args[alignment.directionIndex()];
+            int coordIndex = alignment.directionIndex() + 1;
+            String arg = args[coordIndex];
             if (arg.endsWith(alignment.name().toLowerCase())) {
                 vec.add(alignment.getVector());
-                args[alignment.directionIndex()] = arg.substring(0, arg.length() - alignment.name().length());
+                args[coordIndex] = arg.substring(0, arg.length() - alignment.name().length());
             }
         }
 
         for (Direction dir : Direction.values()) {
-            dir.addVec(vec, CommandKspawn.parsDouble(args[dir.ordinal()]));
+            dir.addVec(vec, CommandKspawn.parsDouble(args[dir.ordinal() + 1]));
         }
 
         Location loc = vec.toLocation(w);
 
         for (int i = 0; i < amount; ++i) {
-            Material material = Material.matchMaterial(type);
-
             if (material == Material.TNT) {
                 TNTPrimed tnt = (TNTPrimed) w.spawnEntity(loc, EntityType.PRIMED_TNT);
                 tnt.setVelocity(new Vector().zero());
@@ -79,24 +75,15 @@ public class CommandKspawn extends KinematicsCommand {
                 fb.setBlockData(material.createBlockData());
                 fb.teleport(loc);
             } else {
-                throw new CommandException("unable to get entity: " + type);
+                throw new CommandException("unable to get entity: " + args[0].toLowerCase(Locale.ENGLISH));
             }
         }
-    }
-
-    private String findCorrectTypeFromAliases(String type) {
-        return switch (type) {
-            case "tntprimed", "primedtnt" -> "tnt";
-            case "white" -> "sand";
-            case "red", "redsand" -> "red_sand";
-            default -> type;
-        };
     }
 
     @Override
     public List<String> tabComplete(KinematicsPlayer kplayer, String fullCommand, String[] args) {
         if (args.length <= 1) {
-            return List.of("tnt", "sand", "redsand", "white_concrete");
+            return List.of("tnt", "sand", "redsand", "whiteconcrete");
         }
 
         Location location = kplayer.getTabCompletionBlockLocation();
