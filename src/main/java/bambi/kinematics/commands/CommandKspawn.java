@@ -95,7 +95,7 @@ public class CommandKspawn extends KinematicsCommand {
 
     @Override
     public List<String> tabComplete(KinematicsPlayer kplayer, String fullCommand, String[] args) {
-        if (args.length == 0) {
+        if (args.length <= 1) {
             return List.of("tnt", "sand", "redsand", "white_concrete");
         }
 

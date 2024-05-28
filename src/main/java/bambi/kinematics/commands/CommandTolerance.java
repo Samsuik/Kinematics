@@ -9,7 +9,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 import static bambi.kinematics.utils.TemplatedMessage.format;
 
@@ -28,17 +31,31 @@ public class CommandTolerance extends KinematicsCommand {
 
         if (args.length >= 3) {
             this.setEachDirection(kplayer, args);
-        } else if (args.length == 2) {
-            for (Direction dir : Direction.values()) {
-                if (args[0].equals(dir.name())) {
-                    this.setDirection(kplayer, args[1], dir);
+        } else if (args.length > 0) {
+            // try to find a direction ex: [2x, 2z] [4, x] [0y]
+            Direction carriedDirection = null;
+            boolean noMatches = true; // ?
+            for (int i = args.length - 1; i >= 0; --i) {
+                String arg = args[i].toLowerCase(Locale.ENGLISH);
+                Optional<Direction> match = Arrays.stream(Direction.values())
+                        .filter(dir -> arg.endsWith(dir.lowerCaseName()))
+                        .findAny();
+                if (match.isEmpty() && carriedDirection == null)
+                    continue; // was unable to find a match
+
+                Direction direction = match.orElse(carriedDirection);
+                String cleanArg = arg.replace(direction.lowerCaseName(), "");
+
+                if (cleanArg.isEmpty()) {
+                    carriedDirection = direction;
+                } else {
+                    noMatches = false;
+                    this.setDirection(kplayer, cleanArg, direction);
                 }
             }
-        } else if (args.length == 1) {
-            for (Direction dir : Direction.values()) {
-                if (fullCommand.endsWith(dir.name())) {
-                    this.setDirection(kplayer, args[0], dir);
-                }
+
+            if (noMatches) {
+                this.setEachDirection(kplayer, new String[]{args[0], args[0], args[0]});
             }
         }
 

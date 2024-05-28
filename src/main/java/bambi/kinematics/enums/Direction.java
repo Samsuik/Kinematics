@@ -3,6 +3,8 @@ package bambi.kinematics.enums;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
+import java.util.Locale;
+
 public enum Direction {
     X {
         @Override
@@ -58,5 +60,9 @@ public enum Direction {
     public abstract Vector addVec(Vector vec, double d);
 
     public abstract Location addLoc(Location loc, double d);
+
+    public final String lowerCaseName() {
+        return name().toLowerCase(Locale.ENGLISH);
+    }
 }
 

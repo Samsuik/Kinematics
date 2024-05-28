@@ -98,7 +98,7 @@ public final class EntitySpawnListener implements Listener, Runnable {
             Entity entity = snapshot.getEntity();
             kplayer.sendTemplatedMessage(new TemplatedMessage(
                     kinematics.getConfiguration().entityspawntemplate, snapshot.getLocation().toVector(),
-                    snapshot.getVelocity(), tick, -1, -1, entity.getName().toLowerCase(Locale.ROOT),
+                    snapshot.getVelocity(), tick, -1, -1, entity.getName().toLowerCase(Locale.ENGLISH),
                     entity.getType() == EntityType.PRIMED_TNT ? NamedTextColor.RED : NamedTextColor.YELLOW
             ));
         }
