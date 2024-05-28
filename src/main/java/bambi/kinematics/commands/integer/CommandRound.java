@@ -8,17 +8,21 @@ import java.util.List;
 
 public class CommandRound extends IntegerCommand {
     public CommandRound(Kinematics plugin) {
-        super(plugin, "round", List.of("decimals"));
+        super(plugin, "round", List.of("r", "decimals"));
     }
 
     @Override
     public void execute(KinematicsPlayer kplayer, int i) {
-        kplayer.getProperties().setDecimals(Math.max(i, 0));
+        kplayer.getProperties().setDecimals(Math.max(i, -1));
     }
 
     @Override
     public void sendMessage(KinematicsPlayer kplayer) {
-        kplayer.sendPrefixedMessage(Component.text("will round to " + kplayer.getProperties().getDecimals() + " decimals"));
+        if (kplayer.getProperties().getDecimals() == -1) {
+            kplayer.sendPrefixedMessage(Component.text("formatting is disabled"));
+        } else {
+            kplayer.sendPrefixedMessage(Component.text("will round to " + kplayer.getProperties().getDecimals() + " decimals"));
+        }
     }
 }
 

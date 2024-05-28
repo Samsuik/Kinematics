@@ -72,6 +72,8 @@ public final class TemplatedMessage {
     }
 
     public static double format(double n, KinematicsPlayer kplayer) {
+        if (kplayer.getProperties().getDecimals() == -1)
+            return n;
         return format(n, kplayer.getProperties().getDecimals());
     }
 
