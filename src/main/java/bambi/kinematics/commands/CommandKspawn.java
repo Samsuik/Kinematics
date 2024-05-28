@@ -51,15 +51,15 @@ public class CommandKspawn extends KinematicsCommand {
         int fuse = args.length > 4 ? CommandKspawn.parsInt(args[4]) : 80;
 
         for (Alignment alignment : Alignment.values()) {
-            String arg = args[alignment.getInt()];
+            String arg = args[alignment.directionIndex()];
             if (arg.endsWith(alignment.name().toLowerCase())) {
                 vec.add(alignment.getVector());
-                args[alignment.getInt()] = arg.substring(0, arg.length() - alignment.name().length());
+                args[alignment.directionIndex()] = arg.substring(0, arg.length() - alignment.name().length());
             }
         }
 
         for (Direction dir : Direction.values()) {
-            dir.addvec(vec, CommandKspawn.parsDouble(args[dir.getInt()]));
+            dir.addVec(vec, CommandKspawn.parsDouble(args[dir.ordinal()]));
         }
 
         Location loc = vec.toLocation(w);

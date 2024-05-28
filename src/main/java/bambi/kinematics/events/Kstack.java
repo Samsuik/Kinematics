@@ -16,7 +16,7 @@ public final class Kstack extends Kevent<EntityChangeBlockEvent> {
     public Kstack(KinematicsPlayer kplayer, EntityChangeBlockEvent e, int tick2, int order) {
         super(kplayer, e, tick2, order);
         this.vel = e.getEntity().getVelocity();
-        this.next = Direction.y.addLoc(e.getBlock().getLocation(), 1.0);
+        this.next = Direction.Y.addLoc(e.getBlock().getLocation(), 1.0);
     }
 
     @Override
@@ -24,7 +24,7 @@ public final class Kstack extends Kevent<EntityChangeBlockEvent> {
         if (!(event instanceof Kstack e)) {
             return false;
         } else if (e.getEvent().getBlock().getLocation().equals(this.next)) {
-            this.next = Direction.y.addLoc(this.next, 1.0);
+            this.next = Direction.Y.addLoc(this.next, 1.0);
             this.increaseAmount();
             return true;
         }

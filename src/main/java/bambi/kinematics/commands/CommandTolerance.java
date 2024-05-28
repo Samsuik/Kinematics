@@ -55,13 +55,13 @@ public class CommandTolerance extends KinematicsCommand {
     public void execute(KinematicsPlayer kplayer, String[] args) throws CommandException {}
 
     private void setEachDirection(KinematicsPlayer kplayer, String[] args) throws CommandException {
-        setDirection(kplayer, args[0], Direction.x);
-        setDirection(kplayer, args[1], Direction.y);
-        setDirection(kplayer, args[2], Direction.z);
+        setDirection(kplayer, args[0], Direction.X);
+        setDirection(kplayer, args[1], Direction.Y);
+        setDirection(kplayer, args[2], Direction.Z);
     }
 
     private void setDirection(KinematicsPlayer kplayer, String arg, Direction dir) throws CommandException {
-        kplayer.getProperties().setExplosionTolerance(dir.setvec(kplayer.getProperties().getExplosionTolerance(), CommandTolerance.parsDouble(arg)));
+        kplayer.getProperties().setExplosionTolerance(dir.setVec(kplayer.getProperties().getExplosionTolerance(), CommandTolerance.parsDouble(arg)));
     }
 }
 

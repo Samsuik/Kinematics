@@ -4,14 +4,14 @@ import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
 public enum Direction {
-    x(0) {
+    X {
         @Override
-        public Vector setvec(Vector vec, double d) {
+        public Vector setVec(Vector vec, double d) {
             return vec.setX(d);
         }
 
         @Override
-        public Vector addvec(Vector vec, double d) {
+        public Vector addVec(Vector vec, double d) {
             return vec.setX(vec.getX() + d);
         }
 
@@ -20,14 +20,14 @@ public enum Direction {
             return loc.add(d, 0, 0);
         }
     },
-    y(1) {
+    Y {
         @Override
-        public Vector setvec(Vector vec, double d) {
+        public Vector setVec(Vector vec, double d) {
             return vec.setY(d);
         }
 
         @Override
-        public Vector addvec(Vector vec, double d) {
+        public Vector addVec(Vector vec, double d) {
             return vec.setY(vec.getY() + d);
         }
 
@@ -36,14 +36,14 @@ public enum Direction {
             return loc.add(0, d, 0);
         }
     },
-    z(2) {
+    Z {
         @Override
-        public Vector setvec(Vector vec, double d) {
+        public Vector setVec(Vector vec, double d) {
             return vec.setZ(d);
         }
 
         @Override
-        public Vector addvec(Vector vec, double d) {
+        public Vector addVec(Vector vec, double d) {
             return vec.setZ(vec.getZ() + d);
         }
 
@@ -53,19 +53,9 @@ public enum Direction {
         }
     };
 
-    private final int dir;
+    public abstract Vector setVec(Vector vec, double d);
 
-    Direction(int i) {
-        this.dir = i;
-    }
-
-    public final int getInt() {
-        return this.dir;
-    }
-
-    public abstract Vector setvec(Vector vec, double d);
-
-    public abstract Vector addvec(Vector vec, double d);
+    public abstract Vector addVec(Vector vec, double d);
 
     public abstract Location addLoc(Location loc, double d);
 }
