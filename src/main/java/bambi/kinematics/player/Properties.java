@@ -2,10 +2,6 @@ package bambi.kinematics.player;
 
 import org.bukkit.util.Vector;
 
-/**
- * SANITY WARNING: This class contains fields that were once a global state in Kinematics. To honor their retirement
- * they are now located here out of the prying eye. I hope you will also honor this by closing this tab in your ide.
- */
 public final class Properties {
     private Vector explosionTolerance = new Vector(0.0, 2.0, 0.0);
     private int minExplosions;

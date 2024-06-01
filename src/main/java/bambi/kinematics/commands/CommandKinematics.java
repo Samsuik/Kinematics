@@ -35,10 +35,10 @@ public class CommandKinematics extends KinematicsCommand {
 
     @Override
     public void execute(KinematicsPlayer kplayer, String[] args) {
-        kplayer.sendPrefixedMessage(Component.text("available commands:").append(createUnhelpfulMessage()));
+        kplayer.sendPrefixedMessage(Component.text("available commands:").append(createHelpMessage()));
     }
 
-    private TextComponent createUnhelpfulMessage() {
+    private TextComponent createHelpMessage() {
         TextComponent.Builder builder = Component.text();
         Set<Class<?>> discovered = new HashSet<>();
 

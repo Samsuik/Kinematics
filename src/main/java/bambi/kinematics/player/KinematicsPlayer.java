@@ -18,7 +18,7 @@ public final class KinematicsPlayer {
     private final Player player;
     private final Audience audience;
     private final Set<AlertType> displayAlerts = EnumSet.noneOf(AlertType.class);
-    private final Properties properties = new Properties(); // DISGUSTING.
+    private final Properties properties = new Properties();
 
     public KinematicsPlayer(Kinematics kinematics, Player player) {
         this.kinematics = kinematics;
