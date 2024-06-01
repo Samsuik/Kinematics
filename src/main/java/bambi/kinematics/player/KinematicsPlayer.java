@@ -76,18 +76,4 @@ public final class KinematicsPlayer {
     public void sendTemplatedMessage(TemplatedMessage template) {
         audience.sendMessage(template.componentFor(this));
     }
-
-    public Location getTabCompletionBlockLocation() {
-        RayTraceResult result = player.rayTraceBlocks(8);
-
-        Location location;
-        if (result == null) {
-            location = player.getLocation(); // failed
-        } else {
-            Block relative = result.getHitBlock().getRelative(result.getHitBlockFace());
-            location = relative.getLocation();
-        }
-
-        return location.toBlockLocation().add(0.5, 0.0, 0.5);
-    }
 }

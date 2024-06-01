@@ -7,6 +7,7 @@ import bambi.kinematics.enums.Alignment;
 import bambi.kinematics.enums.Direction;
 import bambi.kinematics.player.KinematicsPlayer;
 import bambi.kinematics.utils.Materials;
+import bambi.kinematics.utils.TabCompletionUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -17,7 +18,6 @@ import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -89,8 +89,8 @@ public final class CommandKspawn extends KinematicsCommand {
         } else if (args.length == 1) {
             return List.of("tnt", "sand", "redsand", "whiteconcrete");
         } else if (args.length <= 4) {
-            Location location = kplayer.getTabCompletionBlockLocation();
-            return List.of(location.x() + " " + location.y() + " " + location.z());
+            Location location = TabCompletionUtil.getBlockLocation(kplayer.getPlayer());
+            return List.of(location.getX() + " " + location.getY() + " " + location.getZ());
         } else {
             return listOfNumbers();
         }
