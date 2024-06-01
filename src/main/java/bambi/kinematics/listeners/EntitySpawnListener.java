@@ -17,7 +17,7 @@ import org.bukkit.event.entity.EntitySpawnEvent;
 import java.util.*;
 
 public final class EntitySpawnListener implements Listener, Runnable {
-    private static final boolean MODERN = !Bukkit.getServer().getBukkitVersion().contains("1.8");
+    private static boolean MODERN_EVENT_HANDLING = false;
 
     private final Map<Integer, List<EntitySnapshot>> spawnedEntities = new HashMap<>();
     private int tick = 0;
@@ -29,18 +29,17 @@ public final class EntitySpawnListener implements Listener, Runnable {
 
     @EventHandler
     public void onSpawn(EntitySpawnEvent event) {
-        if (MODERN) {
-            Entity entity = event.getEntity();
+        Entity entity = event.getEntity();
 
-            if (entity.getType() == EntityType.PRIMED_TNT || entity.getType() == EntityType.FALLING_BLOCK) {
-                queueNotifyEntitySpawn(entity);
-            }
+        if (entity.getType() == EntityType.PRIMED_TNT || entity.getType() == EntityType.FALLING_BLOCK) {
+            queueNotifyEntitySpawn(entity);
+            MODERN_EVENT_HANDLING = true;
         }
     }
 
     @Override
     public void run() {
-        if (!MODERN) {
+        if (!MODERN_EVENT_HANDLING) {
             trackNewlySpawnedEntities();
         }
 

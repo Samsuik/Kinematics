@@ -3,6 +3,7 @@ package bambi.kinematics.player;
 import bambi.kinematics.Kinematics;
 import bambi.kinematics.enums.AlertType;
 import bambi.kinematics.utils.TemplatedMessage;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -15,13 +16,15 @@ import java.util.Set;
 public final class KinematicsPlayer {
     private final Kinematics kinematics;
     private final Player player;
+    private final Audience audience;
     private final Set<AlertType> displayAlerts = EnumSet.noneOf(AlertType.class);
     private final Properties properties = new Properties(); // DISGUSTING.
 
     public KinematicsPlayer(Kinematics kinematics, Player player) {
         this.kinematics = kinematics;
         this.player = player;
-        this.properties.setDistance(Math.min(kinematics.getConfiguration().maxAlertDistance, player.getViewDistance()*16*2));
+        this.audience = kinematics.getAdventure().player(player);
+        this.properties.setDistance(kinematics.getConfiguration().maxAlertDistance);
         this.displayAlerts.add(AlertType.SHOW_ENTITY_VELOCITY);
         this.displayAlerts.add(AlertType.SHOW_ON_GROUND);
     }
@@ -32,6 +35,10 @@ public final class KinematicsPlayer {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public Audience getAudience() {
+        return audience;
     }
 
     public Properties getProperties() {
@@ -63,11 +70,11 @@ public final class KinematicsPlayer {
     }
 
     public void sendPrefixedMessage(Component component) {
-        player.sendMessage(kinematics.getConfiguration().prefix.append(component));
+        audience.sendMessage(kinematics.getConfiguration().prefix.append(component));
     }
 
     public void sendTemplatedMessage(TemplatedMessage template) {
-        player.sendMessage(template.componentFor(this));
+        audience.sendMessage(template.componentFor(this));
     }
 
     public Location getTabCompletionBlockLocation() {

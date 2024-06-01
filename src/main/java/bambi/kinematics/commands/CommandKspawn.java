@@ -4,7 +4,6 @@ import bambi.kinematics.Kinematics;
 import bambi.kinematics.enums.Alignment;
 import bambi.kinematics.enums.Direction;
 import bambi.kinematics.player.KinematicsPlayer;
-import bambi.kinematics.utils.ArrayUtil;
 import bambi.kinematics.utils.Materials;
 import org.bukkit.Location;
 import org.bukkit.Material;

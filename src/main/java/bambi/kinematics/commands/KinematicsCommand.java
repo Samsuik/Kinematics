@@ -4,6 +4,7 @@ import bambi.kinematics.Kinematics;
 import bambi.kinematics.configuration.Configuration;
 import bambi.kinematics.player.KinematicsPlayer;
 import bambi.kinematics.utils.ArrayUtil;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -54,7 +55,8 @@ public abstract class KinematicsCommand implements CommandExecutor, TabCompleter
         try {
             this.baseCommand(sender, s, ArrayUtil.arraytolowercase(args));
         } catch (CommandException e) {
-            sender.sendMessage(MiniMessage.miniMessage().deserialize(e.getMessage()));
+            Audience audience = this.plugin.getAdventure().sender(sender);
+            audience.sendMessage(MiniMessage.miniMessage().deserialize(e.getMessage()));
         }
 
         return true;

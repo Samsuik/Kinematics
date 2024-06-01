@@ -6,8 +6,9 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.EnumSet;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,7 @@ public final class Configuration {
         getnearbytemplate = getComponent("templates.nearby", "Entity near power: x:@x@vx y:@y@vy z:@z@vz d:@d@vd");
         entityspawntemplate = getComponent("templates.entityspawn", "[@tick] @type spawned at x:@x y:@y z:@z");
         protection = getBoolean("protection.enable", true);
-        notProtected = getMaterials("protection.not_protected", List.of(Material.COBBLESTONE, Material.SAND, Material.GRAVEL, Material.COBBLESTONE_SLAB, Material.STONE_SLAB));
+        notProtected = getMaterials("protection.not_protected", listOfMaterials("sand", "red_sand", "gravel"));
         maxAlertDistance = getInt("alert-distance", 1024);
 
         internalConfig.options().copyDefaults(true);
@@ -72,6 +73,7 @@ public final class Configuration {
                 .filter(obj -> obj instanceof String)
                 .map(obj -> (String) obj)
                 .map(Material::matchMaterial)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
     }
 
@@ -81,5 +83,12 @@ public final class Configuration {
         if (comments.length > 0) {
             internalConfig.setComments(path, List.of(comments));
         }
+    }
+
+    private List<Material> listOfMaterials(String... names) {
+        return Arrays.stream(names)
+                .map(Material::matchMaterial)
+                .filter(Objects::nonNull)
+                .toList();
     }
 }

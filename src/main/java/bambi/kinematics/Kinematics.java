@@ -9,6 +9,7 @@ import bambi.kinematics.events.KEventManager;
 import bambi.kinematics.listeners.EntitySpawnListener;
 import bambi.kinematics.listeners.KinematicsListener;
 import bambi.kinematics.player.PlayerManager;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -18,11 +19,15 @@ public class Kinematics extends JavaPlugin {
     private KEventManager eventManager;
     private PlayerManager playerManager;
     private Configuration configuration;
+    private BukkitAudiences adventure;
 
     @Override
     public void onEnable() {
         // register config
         this.configuration = new Configuration(this);
+
+        // adventure
+        this.adventure = BukkitAudiences.create(this);
 
         // register commands
         this.initializeCommands();
@@ -66,6 +71,10 @@ public class Kinematics extends JavaPlugin {
 
     public final Configuration getConfiguration() {
         return configuration;
+    }
+
+    public final BukkitAudiences getAdventure() {
+        return adventure;
     }
 }
 

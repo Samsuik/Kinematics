@@ -11,11 +11,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.time.Duration;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -23,7 +23,7 @@ public final class PlayerManager implements Listener {
     // Keep player data around for 2 hours after they log off
     private final Cache<Player, KinematicsPlayer> offlinePlayers = CacheBuilder.newBuilder()
             .maximumSize(600) // limit abuse
-            .expireAfterWrite(Duration.ofHours(2))
+            .expireAfterWrite(2, TimeUnit.HOURS) // guava version is before java 8
             .build();
 
     private final Map<Player, KinematicsPlayer> onlinePlayers = new HashMap<>();
