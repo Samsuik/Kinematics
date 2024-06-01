@@ -1,7 +1,7 @@
 package bambi.kinematics.commands.toggle;
 
 import bambi.kinematics.Kinematics;
-import bambi.kinematics.commands.CommandTolerance;
+import bambi.kinematics.commands.other.CommandTolerance;
 import bambi.kinematics.commands.integer.CommandMinExplosions;
 import bambi.kinematics.enums.AlertType;
 import bambi.kinematics.player.KinematicsPlayer;

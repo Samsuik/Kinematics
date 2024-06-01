@@ -1,7 +1,7 @@
 package bambi.kinematics;
 
 import bambi.kinematics.commands.CommandKinematics;
-import bambi.kinematics.commands.CommandKspawn;
+import bambi.kinematics.commands.other.CommandKspawn;
 import bambi.kinematics.commands.KinematicsCommand;
 import bambi.kinematics.commands.toggle.CommandProtection;
 import bambi.kinematics.configuration.Configuration;

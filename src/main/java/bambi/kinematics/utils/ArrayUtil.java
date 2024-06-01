@@ -1,5 +1,7 @@
 package bambi.kinematics.utils;
 
+import java.util.Locale;
+
 public final class ArrayUtil {
     public static String[] shiftarray(String[] array) {
         String[] newarray = new String[array.length - 1];
@@ -12,7 +14,7 @@ public final class ArrayUtil {
     public static String[] arraytolowercase(String[] array) {
         String[] newarray = new String[array.length];
         for (int i = 0; i < array.length; i++) {
-            newarray[i] = array[i].toLowerCase();
+            newarray[i] = array[i].toLowerCase(Locale.ENGLISH);
         }
         return newarray;
     }

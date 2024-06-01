@@ -1,6 +1,8 @@
-package bambi.kinematics.commands;
+package bambi.kinematics.commands.other;
 
 import bambi.kinematics.Kinematics;
+import bambi.kinematics.commands.CommandException;
+import bambi.kinematics.commands.KinematicsCommand;
 import bambi.kinematics.enums.Alignment;
 import bambi.kinematics.enums.Direction;
 import bambi.kinematics.player.KinematicsPlayer;
@@ -15,12 +17,13 @@ import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.util.Vector;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-public class CommandKspawn extends KinematicsCommand {
+public final class CommandKspawn extends KinematicsCommand {
     public CommandKspawn(Kinematics plugin) {
-        super(plugin, "kspawn", List.of("spawn"));
+        super(plugin, "kspawn", List.of("spawn", "s"));
     }
 
     @Override
@@ -81,12 +84,16 @@ public class CommandKspawn extends KinematicsCommand {
 
     @Override
     public List<String> tabComplete(KinematicsPlayer kplayer, String fullCommand, String[] args) {
-        if (args.length <= 1) {
+        if (args.length == 0 || args.length > 6) {
+            return List.of();
+        } else if (args.length == 1) {
             return List.of("tnt", "sand", "redsand", "whiteconcrete");
+        } else if (args.length <= 4) {
+            Location location = kplayer.getTabCompletionBlockLocation();
+            return List.of(location.x() + " " + location.y() + " " + location.z());
+        } else {
+            return listOfNumbers();
         }
-
-        Location location = kplayer.getTabCompletionBlockLocation();
-        return List.of(location.x() + " " + location.y() + " " + location.z());
     }
 }
 

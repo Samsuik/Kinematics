@@ -1,6 +1,8 @@
-package bambi.kinematics.commands;
+package bambi.kinematics.commands.other;
 
 import bambi.kinematics.Kinematics;
+import bambi.kinematics.commands.CommandException;
+import bambi.kinematics.commands.KinematicsCommand;
 import bambi.kinematics.enums.Direction;
 import bambi.kinematics.player.KinematicsPlayer;
 import net.kyori.adventure.text.Component;
@@ -11,18 +13,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 import static bambi.kinematics.utils.TemplatedMessage.format;
 
-public class CommandTolerance extends KinematicsCommand {
+public final class CommandTolerance extends KinematicsCommand {
     public CommandTolerance(Kinematics plugin) {
         super(plugin, "tolerance", List.of("tol"));
     }
 
     @Override
-    public void baseCommand(@NotNull CommandSender sender, @NotNull String fullCommand, String[] args) throws CommandException {
+    public void baseCommand(@NotNull CommandSender sender, String[] args) throws CommandException {
         if (!(sender instanceof Player player)) {
             throw new CommandException("Player command only");
         }
@@ -36,7 +37,7 @@ public class CommandTolerance extends KinematicsCommand {
             Direction carriedDirection = null;
             boolean noMatches = true; // ?
             for (int i = args.length - 1; i >= 0; --i) {
-                String arg = args[i].toLowerCase(Locale.ENGLISH);
+                String arg = args[i];
                 Optional<Direction> match = Arrays.stream(Direction.values())
                         .filter(dir -> arg.endsWith(dir.lowerCaseName()))
                         .findAny();

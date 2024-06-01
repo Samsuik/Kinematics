@@ -16,10 +16,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.IntStream;
 
 public abstract class KinematicsCommand implements CommandExecutor, TabCompleter {
-    private final List<KinematicsCommand> subcommands = new ArrayList<>();
+    private final List<KinematicsCommand> subCommands = new ArrayList<>();
+    private final Map<Class<? extends KinematicsCommand>, KinematicsCommand> subCommandsByClass = new HashMap<>();
     private final String name;
     private final List<String> aliases;
     private final Kinematics plugin;
@@ -50,16 +54,32 @@ public abstract class KinematicsCommand implements CommandExecutor, TabCompleter
         return plugin.getConfiguration();
     }
 
+    public final boolean isCommand(String name) {
+        return this.name.equals(name) || this.aliases.contains(name);
+    }
+
+    public boolean showInHelpMessage() {
+        return true;
+    }
+
+    public boolean isTabCompletable() {
+        return true;
+    }
+
     @Override
     public final boolean onCommand(@NotNull CommandSender sender, @NotNull Command fullCommand, @NotNull String s, @NotNull String[] args) {
         try {
-            this.baseCommand(sender, s, ArrayUtil.arraytolowercase(args));
+            this.baseCommand(sender, ArrayUtil.arraytolowercase(args));
         } catch (CommandException e) {
-            Audience audience = this.plugin.getAdventure().sender(sender);
-            audience.sendMessage(MiniMessage.miniMessage().deserialize(e.getMessage()));
+            this.announceException(sender, e);
         }
 
         return true;
+    }
+
+    protected final void announceException(CommandSender sender, CommandException e) {
+        Audience audience = this.plugin.getAdventure().sender(sender);
+        audience.sendMessage(MiniMessage.miniMessage().deserialize(e.getMessage()));
     }
 
     public @Nullable String description() {
@@ -70,11 +90,11 @@ public abstract class KinematicsCommand implements CommandExecutor, TabCompleter
 
     public abstract void execute(KinematicsPlayer kplayer, String[] args) throws CommandException;
 
-    protected void baseCommand(@NotNull CommandSender sender, @NotNull String fullCommand, @NotNull String[] args) throws CommandException {
+    protected void baseCommand(@NotNull CommandSender sender, @NotNull String[] args) throws CommandException {
         if (args.length > 0) {
-            for (KinematicsCommand sub : this.subcommands) {
-                if (args[0].equalsIgnoreCase(sub.getName()) || sub.getAliases().contains(args[0].toLowerCase())) {
-                    sub.baseCommand(sender, args[0], ArrayUtil.shiftarray(args));
+            for (KinematicsCommand sub : this.subCommands) {
+                if (args[0].equalsIgnoreCase(sub.getName()) || sub.getAliases().contains(args[0])) {
+                    sub.baseCommand(sender, ArrayUtil.shiftarray(args));
                     return;
                 }
             }
@@ -99,47 +119,42 @@ public abstract class KinematicsCommand implements CommandExecutor, TabCompleter
     public List<String> tabComplete(KinematicsPlayer kplayer, String fullCommand, String[] args) {
         ArrayList<String> list = new ArrayList<>();
 
-        if (args.length > 0) {
-            block0:
-            for (KinematicsCommand sub : this.subcommands) {
-                if (args[0].equalsIgnoreCase(sub.getName()) || sub.getAliases().contains(args[0].toLowerCase())) {
-                    return sub.tabComplete(kplayer, args[0], ArrayUtil.shiftarray(args));
-                }
-                if (sub.getName().startsWith(args[0])) {
-                    list.add(sub.getName());
-                    continue;
-                }
-                for (String ali : this.getAliases()) {
-                    if (!ali.startsWith(args[0])) continue;
-                    list.add(ali);
-                    continue block0;
-                }
+        for (KinematicsCommand sub : this.subCommands) {
+            if (args.length > 0 && (args[0].equalsIgnoreCase(sub.getName()) || sub.getAliases().contains(args[0].toLowerCase()))) {
+                return sub.tabComplete(kplayer, args[0], ArrayUtil.shiftarray(args));
+            } else if (!sub.isTabCompletable()) {
+                continue;
             }
-            return list;
-        }
 
-        block2:
-        for (KinematicsCommand sub : this.subcommands) {
-            if (sub.getName().startsWith(fullCommand)) {
+            String search = args.length > 0 ? args[0] : fullCommand;
+            List<String> aliases = args.length > 0 ? this.getAliases() : sub.getAliases();
+
+            if (sub.getName().startsWith(search)) {
                 list.add(sub.getName());
                 continue;
             }
-            for (String ali : sub.getAliases()) {
-                if (!ali.startsWith(fullCommand)) continue;
+
+            for (String ali : aliases) {
+                if (!ali.startsWith(search)) continue;
                 list.add(ali);
-                continue block2;
+                break;
             }
         }
 
         return list;
     }
 
-    public final List<KinematicsCommand> getSubcommands() {
-        return subcommands;
+    public final List<KinematicsCommand> getSubCommands() {
+        return subCommands;
+    }
+
+    public final @Nullable KinematicsCommand getSub(Class<? extends KinematicsCommand> command) {
+        return this.subCommandsByClass.get(command);
     }
 
     public final void addSub(KinematicsCommand cmd) {
-        this.subcommands.add(cmd);
+        this.subCommands.add(cmd);
+        this.subCommandsByClass.put(cmd.getClass(), cmd);
     }
 
     protected static int parsInt(String arg) throws CommandException {
@@ -164,6 +179,12 @@ public abstract class KinematicsCommand implements CommandExecutor, TabCompleter
         } catch (Exception e) {
             throw new CommandException("no material: " + arg);
         }
+    }
+
+    protected static List<String> listOfNumbers() {
+        return IntStream.range(0, 10)
+                .mapToObj(String::valueOf)
+                .toList();
     }
 }
 

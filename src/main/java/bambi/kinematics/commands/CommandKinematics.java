@@ -3,6 +3,10 @@ package bambi.kinematics.commands;
 import bambi.kinematics.Kinematics;
 import bambi.kinematics.commands.integer.CommandDistance;
 import bambi.kinematics.commands.integer.CommandRound;
+import bambi.kinematics.commands.other.CommandChain;
+import bambi.kinematics.commands.other.CommandKspawn;
+import bambi.kinematics.commands.other.CommandTolerance;
+import bambi.kinematics.commands.other.CommandWait;
 import bambi.kinematics.commands.toggle.*;
 import bambi.kinematics.player.KinematicsPlayer;
 import net.kyori.adventure.text.Component;
@@ -10,10 +14,9 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-public class CommandKinematics extends KinematicsCommand {
+public final class CommandKinematics extends KinematicsCommand {
     public CommandKinematics(Kinematics plugin) {
         super(plugin, "kinematics");
         this.addSub(new CommandExplosions(plugin));
@@ -28,6 +31,8 @@ public class CommandKinematics extends KinematicsCommand {
         this.addSub(new CommandProtection(plugin));
         this.addSub(new CommandDistance(plugin));
         this.addSub(new CommandShowEntityFeet(plugin));
+        this.addSub(new CommandChain(plugin, this));
+        this.addSub(new CommandWait(plugin));
     }
 
     @Override
@@ -42,8 +47,8 @@ public class CommandKinematics extends KinematicsCommand {
         TextComponent.Builder builder = Component.text();
         Set<Class<?>> discovered = new HashSet<>();
 
-        for (KinematicsCommand subcommand : getSubcommands()) {
-            if (discovered.contains(subcommand.getClass())) {
+        for (KinematicsCommand subcommand : getSubCommands()) {
+            if (discovered.contains(subcommand.getClass()) || !subcommand.showInHelpMessage()) {
                 continue;
             }
 
@@ -55,7 +60,7 @@ public class CommandKinematics extends KinematicsCommand {
                 builder.append(Component.text("; " + subcommand.description(), NamedTextColor.GRAY));
             }
 
-            for (KinematicsCommand more : subcommand.getSubcommands()) {
+            for (KinematicsCommand more : subcommand.getSubCommands()) {
                 discovered.add(more.getClass());
             }
 
@@ -64,6 +69,5 @@ public class CommandKinematics extends KinematicsCommand {
 
         return builder.build();
     }
-
 }
 
